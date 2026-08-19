@@ -66,7 +66,7 @@ public class arbol {
     }
     public nodo rotacionderecha(nodo y){
         nodo x=y.getIzquierdo();
-        nodo temp=y.getDerecho();
+        nodo temp=x.getDerecho();
         x.setDerecho(y);
         y.setIzquierdo(temp);
         y.setAltafulla(Math.max(alturaNodo(y.getIzquierdo()), alturaNodo(y.getDerecho()))+1);
@@ -75,12 +75,12 @@ public class arbol {
     }
     public nodo rotacionizquierda(nodo x){
         nodo y=x.getDerecho();
-        nodo temp=x.getIzquierdo();
+        nodo temp=y.getIzquierdo();
         y.setIzquierdo(x);
         x.setDerecho(temp);
         x.setAltafulla(Math.max(alturaNodo(x.getIzquierdo()), alturaNodo(x.getDerecho()))+1);
         y.setAltafulla(Math.max(alturaNodo(y.getIzquierdo()), alturaNodo(y.getDerecho()))+1);
-        return x;
+        return y;
     }
     public void insetar(int valor){
         this.raiz=insertar2(this.raiz,valor);
@@ -92,7 +92,22 @@ public class arbol {
             return nuevonodo;
         }
         if(valor<nodo.getValor()){
-            nodo.setIzquierdo(nodo);
+            nodo.setIzquierdo(insertar2(nodo.getIzquierdo(),valor));
+        }else if (valor>nodo.getValor()){
+            nodo.setDerecho(insertar2(nodo.getDerecho(),valor));
+        }else {
+            return nodo;
         }
+        nodo.setAltafulla(1+Math.max(alturaNodo(nodo.getIzquierdo()), alturaNodo(nodo.getDerecho())));
+        int fe=factordequilibrio(nodo);
+        int valornododerecho=nodo.getDerecho()!=null?nodo.getDerecho().getValor():0;
+        int valornodoizquierdo=nodo.getIzquierdo()!=null?nodo.getIzquierdo().getValor():0;
+        if(fe>1&&valor<valornodoizquierdo){
+            return rotacionderecha(nodo);
+        }
+        if(fe<-1&&valor>valornododerecho){
+            return rotacionizquierda(nodo);
+        }
+        return nodo;
     }
 }
